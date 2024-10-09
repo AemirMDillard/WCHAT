@@ -1,0 +1,108 @@
+<html>
+    <head>
+        <title>HOMEPAGE</title> 
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+        <style type="text/css">
+        <style>
+            body.baseBody {
+                min-height: 0vh;
+                background: var(--color-bg);
+                color: var(--color-fg);  
+                display:flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            nav{
+                width: 100%;
+                padding: 1rem;
+
+                font-size: 1.5rem;    
+                background: var(--color-container-bg);
+            }
+            nav > .navitem:first-child{
+                border-left: none;
+            }
+            nav > .navitem{
+                display: inline-block;
+                text-decoration: none;
+
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                color: var(--color-container-text);
+                border-left: 2px solid var(--color-container-text);
+            }
+            nav > .navitem:hover {
+                text-decoration: underline;
+                background: var(--color-container-text);
+                color: var(--color-container-bg);
+            }
+
+            .profile {
+                text-align: center;
+                margin-top: 50px;
+                background-color:#E7D7C1
+            }
+            #username{
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            #edit {
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #BF4342;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+            }
+            #quiz {
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #BF4342;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+            }
+            #chatting {
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #BF4342;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+            }
+
+        </style>
+        </head>
+        <body class="baseBody">
+            <nav class="navigation">
+                <a class="navitem" href="/homepage">Home</a>
+                <a class="navitem" href="/quiz.html">Survey</a>
+                <a class="navitem" href="/chat">Help Chat</a>
+                <a class="navitem" href="/logout">Logout</a>
+            </nav> 
+            <div class= "profile">
+                <div id="username">fetchUserProfile()</div>
+            </div>
+        </body>
+        <script>
+        async function fetchUserProfile() {
+            let response = await fetch('/currentuser');
+            let data = await response.json(); // Parse JSON directly
+            console.log("USER FETCHED: ", data);
+            // Access the 'messages' property to get the array of active users
+            let username = data.username;
+            document.getElementById("username").textContent = username;
+        }
+        
+        fetchUserProfile()
+    
+        
+        </script>
+      
+        
+<html>
+
+        
+        

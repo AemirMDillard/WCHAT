@@ -1,0 +1,14 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-container-text: rgb(223, 214, 214);
+    --color-container-bg: #8C1C13;
+    --color-fg: black;
+    --color-bg: #E7D7C1;
+    --brown: #A78A7F
+}
+

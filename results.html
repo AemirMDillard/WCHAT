@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <title>RESULTS</title> 
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+        <style type="text/css">
+        <style>
+            body.baseBody {
+                    min-height: 0vh;
+                    background: var(--color-bg);
+                    color: var(--color-fg);  
+                    display:flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+            nav{
+                width: 100%;
+                padding: 1rem;
+
+                font-size: 1.5rem;    
+                background: var(--color-container-bg);
+            }
+            nav > .navitem:first-child{
+                border-left: none;
+            }
+            nav > .navitem{
+                display: inline-block;
+                text-decoration: none;
+
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                color: var(--color-container-text);
+                border-left: 2px solid var(--color-container-text);
+            }
+            nav > .navitem:hover {
+                text-decoration: underline;
+                background: var(--color-container-text);
+                color: var(--color-container-bg);
+            }
+            .results {
+                text-align: center;
+                margin-top: 50px;
+                background-color:#E7D7C1;
+                color: black;
+            }
+            #results{
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+        </style>
+        </head>
+        <body class="baseBody">
+            <nav class="navigation">
+                <a class="navitem" href="/homepage">Home</a>
+                <a class="navitem" href="/quiz.html">Survey</a>
+                <a class="navitem" href="/chat">Help Chat</a>
+                <a class="navitem" href="/logout">Logout</a>
+            </nav>   
+        <body>
+        <div class="results">
+            <div id="results"> </div>
+            <div id="final_diagnoses"></div>
+        </div>
+        <script>
+        async function diagnosis() {
+            fetch('/diagnosis')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("diagnosis data:", data);
+                    document.getElementById("final_diagnoses").textContent = data.final_diagnoses;
+                })
+                .catch(error => console.error('Error fetching results', error));
+        }
+        diagnosis();
+        </script> 
+<html>

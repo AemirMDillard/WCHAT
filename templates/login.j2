@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="/static/style.css"/>
+        <style type="text/css">
+            body.baseBody {
+                min-height: 0vh;
+                background: var(--color-bg);
+                color: var(--color-fg);
+                
+                display:flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            form {
+                min-width: 80vw;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-grow: 1;
+            }
+            form > div {
+                margin: 0.5em;
+            }
+            
+           
+            div.text-input{
+                position: relative;
+                border: solid black 1px;
+                padding: 0.5em;
+                border-radius: 10px;
+                display: flex;
+                justify-content: center;
+            }
+            div.text-input > label {
+                position: absolute;
+                top: 1ex;
+                left: 0.5em;
+                pointer-events: none;
+
+                color: black;
+
+                transition: top linear 150ms;
+            }
+            div.text-input > input{
+                border: 0;
+                outline: none;
+                font-size: 14pt;
+            }
+            div.text-input > input:focus + label,
+            div.text-input > input:not(:placeholder-shown) + label
+            {
+                background: var(--color-bg);
+                color: var(--color-fg);
+                top: -1.5ex;
+            }
+
+            div.text-input > label.showPassword{
+                position: unset;
+                pointer-events: all;
+            }
+
+            button {
+                padding: 0.25em;
+                border-radius: 5px;
+                color: var(--color-bg)
+            }
+            
+            nav{
+                width: 100%;
+                padding: 1rem;
+
+                font-size: 1.5rem;    
+                background: var(--color-container-bg);
+            }
+            nav > .navitem:first-child{
+                border-left: none;
+            }
+            nav > .navitem{
+                display: inline-block;
+                text-decoration: none;
+
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                color: var(--color-container-text);
+                border-left: 2px solid var(--color-container-text);
+            }
+            nav > .navitem:hover {
+                text-decoration: underline;
+                background: var(--color-container-text);
+                color: var(--color-container-bg);
+            }
+            
+            .error-message {
+            color: red; 
+            font-size: 14px;
+            margin-top: 5px; 
+        }
+        </style>
+    </head>
+    <body class="baseBody">
+        <nav class="navigation">
+            <a class="navitem" href="/">Home</a>
+            <a class="navitem" href="/quiz.html">Survey</a>
+            <a class="navitem" href="/chat?username={{ username }}"">Help Chat</a>
+            <a class="navitem" href="/logout">Logout</a>
+        </nav>
+
+        <form method="POST" action="/login">
+            <div class="text-input">
+                <input placeholder=" " name="username" style="background-color: #E7D7C1;"/>
+                <label>Username</label>
+            </div>
+            <div class="text-input">
+                <input placeholder=" " name="password" type="password" style="background-color: #E7D7C1;"/>
+                <label>Password</label>
+
+                <label class="showPassword" onclick="togglePassword(event)">&#x1F512;</label>
+            </div>
+            <div>
+                <button name="mode" value="login" style="background-color: #A78A7F;">Login</button>
+                <button name="mode" value="register" style="background-color: #A78A7F;">Register</button>
+            </div>
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+        </form>
+        <script type="text/javascript">
+            function togglePassword(event){
+                let input = event.target.parentNode.querySelector('input');
+                if(input.getAttribute('type') =='password'){
+                    input.setAttribute('type','text')
+                    event.target.innerHTML = "&#x1F441;"
+                }
+                else{
+                    input.setAttribute('type', 'password')
+                    event.target.innerHTML = "&#x1F512;"
+                }
+            }
+        </script>
+    </body>
+</html>

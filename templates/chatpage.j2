@@ -1,0 +1,202 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+    <title>Help Chat</title> 
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <style type="text/css">
+            body.baseBody {
+                min-height: 0vh;
+                background: var(--color-bg);
+                color: var(--color-fg);  
+                display:flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            nav{
+                width: 100%;
+                padding: 1rem;
+                font-size: 1.5rem;    
+                background: var(--color-container-bg);
+            }
+            nav > .navitem:first-child{
+                border-left: none;
+            }
+            nav > .navitem{
+                display: inline-block;
+                text-decoration: none;
+
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                color: var(--color-container-text);
+                border-left: 2px solid var(--color-container-text);
+            }
+            nav > .navitem:hover {
+                text-decoration: underline;
+                background: var(--color-container-text);
+                color: var(--color-container-bg);
+            }
+
+        </style>
+    </head>
+    <body class="baseBody">
+        <nav class="navigation">
+            <a class="navitem" href="/homepage">Home</a>
+            <a class="navitem" href="/quiz.html">Survey</a>
+            <a class="navitem" href="/chat">Help Chat</a>
+            <a class="navitem" href="/logout">Logout</a>
+        </nav> 
+        <div class="chat-wrapper">
+            <button type=“button” id="toggle-button" onclick="toggleActiveUsers()">Active Users</button>
+            <div class="user-list-container">
+                <ul class="user-list" id="user-list"></ul>
+            </div>
+            <div class="chat-box" id="chat-box"></div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="message" placeholder="Type your message...">
+            <button type=“button” id="send-button" onclick="sendMessage()">Send</button>
+        </div>
+    <script type="text/javascript">
+        // Function to toggle the list of active users
+        function toggleActiveUsers() {
+            let userList = document.getElementById('user-list');
+            userList.classList.toggle('open'); 
+            console.log("Button Clicked");
+        }
+
+        // Function to display active users
+        async function displayActiveUsers() {
+            let userList = document.getElementById('user-list');
+            // Fetch list of active users from the server
+            let response = await fetch('/active-users');
+            let data = await response.json(); 
+            console.log("ACTIVE USERS FETCHED: ", data);
+            let activeUsers = data.messages;
+            // Clear previous list and display active users
+            userList.innerHTML = '';
+            activeUsers.forEach(username => {
+                let userItem = document.createElement('div');
+                userItem.textContent = username;
+                userItem.classList.add('active-user');
+                userItem.onclick = () => startChat(username); 
+                userList.appendChild(userItem);
+            });
+        }
+
+        async function startChat(username) {
+            console.log("Starting Chat");
+
+            const currentURL = new URL(window.location.href);
+            const params = new URLSearchParams(currentURL.search);
+            const currentUsername = params.get('chattingwith');
+            if (currentUsername !== username) {
+                // Update URL only if the parameters are not already set 
+                params.set('chattingwith', username);
+                currentURL.search = params.toString();
+                const newUrl = currentURL.toString();
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            }
+            const messageObj = { 
+                username: username, 
+                message: ''
+            };
+
+            fetch('/chathistory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageObj)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("MESSAGE HISTORY FETCHED: ", data);
+                let messages = data.messages; 
+                // Construct HTML for all messages
+                let html = "";
+                messages.forEach(message => {
+                    html += `<p>${message}</p>`;
+                });
+                // Update the chat box with the HTML received from the server
+                document.getElementById("chat-box").innerHTML = html;
+            });
+        }
+
+        async function sendMessage() { 
+            // Get the URLSearchParams object from the current URL
+            const params = new URLSearchParams(window.location.search);
+
+            // Get the value of a specific parameter
+            let username = params.get('chattingwith');
+            let message = document.getElementById("message").value;
+            // Construct the message object
+            const messageObj = { 
+                message: message,
+                username: username
+            };
+            
+            fetch('/sendmessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageObj)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("MESSAGE HISTORY FETCHED: ", data);
+                let messages = data.messages; 
+                // Construct HTML for all messages
+                let html = "";
+                messages.forEach(message => {
+                    html += `<p>${message}</p>`;
+                });
+                // Update the chat box with the HTML received from the server
+                document.getElementById("chat-box").innerHTML = html;
+            });
+        }
+
+        function updateChat() {
+            const params = new URLSearchParams(window.location.search);
+            let username = params.get('chattingwith');
+            console.log("Updating Chat");
+            const messageObj = { 
+                message: '',
+                username: username
+            };
+            // Send the message to the server using fetch with JSON.stringify
+            fetch('/chathistory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(messageObj)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("MESSAGE HISTORY FETCHED: ", data);
+                let messages = data.messages; 
+                // Construct HTML for all messages
+                let html = "";
+                messages.forEach(message => {
+                    html += `<p>${message}</p>`;
+                });
+                // Update the chat box with the HTML received from the server
+                document.getElementById("chat-box").innerHTML = html;
+            });
+        }
+
+        
+        displayActiveUsers();
+        const params = new URLSearchParams(window.location.search);
+       
+        let username = params.get('chattingwith');
+        setInterval(() => {
+            updateChat(); 
+        }, 5000); 
+
+    </script>
+</body> 
+</html> 
