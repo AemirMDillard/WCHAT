@@ -318,6 +318,7 @@ def checkovarian(userid):
     else:
         print("true")
         return True
+
 """Parameter is the userid. This checks the number of symptoms the user shows for pcos
 by taking the count of how many symptoms are returned from the database which are associated with pcos.
 If the count is less than 2, it returns false as they are not at risk for it. If its greater it returns true."""
